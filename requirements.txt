@@ -1,0 +1,5 @@
+google-generativeai
+rapidfuzz
+flask
+flask-cors
+twilio

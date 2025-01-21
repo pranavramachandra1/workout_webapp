@@ -1,0 +1,40 @@
+/* General styles */
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Ensure text is white */
+body, table, th, td {
+  color: white;
+}
+
+/* Custom color for purple accents */
+.text-purple {
+  color: #9b59b6;
+}
+
+/* Table styling */
+.table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Hover effect for table rows */
+.table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Ensure detail rows are initially hidden */
+.hidden {
+  display: none;
+}
+
+/* Styling for dropdown toggle icons */
+.expand-icon {
+  cursor: pointer;
+  color: #0d6efd;
+}
+
+.expand-icon:hover {
+  color: #28a745;
+}

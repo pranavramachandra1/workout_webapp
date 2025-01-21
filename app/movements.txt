@@ -1,0 +1,100 @@
+barbell bench press
+dumbbell bench press
+barbell incline bench press
+dumbbell incline bench press
+barbell decline bench press
+dumbbell decline bench press
+dumbbell chest fly
+dumbbell incline chest fly
+dumbbell decline chest fly
+cable crossover
+low cable fly
+high cable fly
+chest press machine
+chest fly machine
+single-arm cable fly
+barbell deadlift
+barbell romanian deadlift
+dumbbell deadlift
+pull-up
+cable lat pulldown
+seated cable row
+single-arm dumbbell row
+barbell row
+t-bar row
+dumbbell reverse fly
+reverse cable fly
+face pull
+straight arm pulldown
+landmine row
+single-arm cable row
+barbell overhead press
+dumbbell overhead press
+arnold press
+dumbbell front raise
+dumbbell lateral raise
+dumbbell rear delt fly
+seated dumbbell press
+single-arm cable lateral raise
+cable rear delt fly
+barbell upright row
+dumbbell upright row
+landmine press
+reverse pec deck
+cable shoulder press
+seated lateral raise machine
+barbell curl
+dumbbell curl
+hammer curl
+concentration curl
+preacher curl
+cable curl
+cable rope curl
+single-arm cable curl
+barbell reverse curl
+close-grip bench press
+cable tricep pushdown
+dumbbell overhead tricep extension
+barbell skull crushers
+dumbbell skull crushers
+dumbbell tricep kickback
+cable rope overhead tricep extension
+single-arm cable tricep extension
+seated barbell curl
+dumbbell spider curl
+cable reverse grip curl
+cable crunch
+dumbbell russian twist
+dumbbell side bend
+landmine twist
+cable pallof press
+cable wood chop
+kneeling cable crunch
+hanging leg raise
+cable standing oblique crunch
+dumbbell dead bug
+barbell squat
+barbell front squat
+dumbbell bulgarian split squat
+dumbbell lunge
+dumbbell step-up
+dumbbell goblet squat
+barbell deadlift (romanian)
+dumbbell stiff-legged deadlift
+barbell glute bridge
+barbell hip thrust
+cable pull-through
+dumbbell single-leg romanian deadlift
+cable kickback
+cable leg curl
+dumbbell standing calf raise
+dumbbell seated calf raise
+landmine squat
+dumbbell single-leg squat
+cable hip abduction
+cable hip adduction
+dumbbell farmer's carry
+kettlebell swing
+dumbbell snatch
+dumbbell clean and press
+dumbbell turkish get-up
