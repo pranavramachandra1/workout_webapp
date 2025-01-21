@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify, send_from_directory, render_templ
 from flask_cors import CORS
 from twilio.twiml.messaging_response import MessagingResponse
 import os
-from app.services import upload_workout, search_by_uuid, aggregate_volume, get_home_page_wrkts
+from app.services import *
 
 main = Blueprint('main', __name__, static_folder='static', template_folder='templates')
 CORS(main)
@@ -80,3 +80,17 @@ def get_all_movements():
         return jsonify({"error": str(e)}), 500
 
     return jsonify(movements), 200
+
+@main.route('/api/get_data')
+def get_data():
+    print("Fetching data for /api/get_data")
+    data = read_data()  # Calls the function to load data.json
+    print(f"Data returned: {data}")
+    return jsonify(data)
+
+@main.route('/api/get_movements')
+def get_movements():
+    print("Fetching movements for /api/get_movements")
+    movements = load_movements()  # Calls the function to load movements.txt
+    print(f"Movements returned: {movements}")
+    return jsonify(movements)

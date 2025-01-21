@@ -117,18 +117,6 @@ def add_workout(new_workout):
     data["workouts"].append(new_workout)  # Add the new workout
     write_data(data)  # Save back to the JSON file
 
-# def standardize_movement_name_fuzzy(input_name):
-#     input_name = input_name.lower()
-#     match, score = process.extractOne(input_name, STANDARD_MOVEMENTS.keys(), score_cutoff=80)
-#     return STANDARD_MOVEMENTS[match] if match else input_name
-
-# def standardize_movement_name(input_name):
-#     input_name = input_name.lower()
-#     for movement in STANDARD_MOVEMENTS:
-#         if movement in input_name:
-#             return STANDARD_MOVEMENTS[movement]  # Return standardized name
-#     return input_name  # Return as-is if no match found
-
 def validate_and_correct_movements(workout_json, valid_movements = VALID_MOVEMENTS):
     for entry in workout_json["workout"]:
         # Normalize the input movement
@@ -150,8 +138,17 @@ def validate_and_correct_movements(workout_json, valid_movements = VALID_MOVEMEN
     
     return workout_json
 
-# def standardize_workout(workout_data):
-#     for movement in workout_data["workout"]:
-#         movement["movement"] = standardize_movement_name(movement["movement"])
-#     return workout_data
+def load_movements():
+    print(f"Loading movements file from: {MOVEMENTS_FILE}")
+    with open(MOVEMENTS_FILE, "r") as file:
+        movements = {line.strip().lower(): line.strip() for line in file}
+    print(f"Loaded movements: {movements}")
+    return movements
+
+def read_data():
+    print(f"Reading data file from: {DATA_FILE}")
+    with open(DATA_FILE, "r") as file:
+        data = json.load(file)
+    print(f"Loaded data: {data}")
+    return data
 
