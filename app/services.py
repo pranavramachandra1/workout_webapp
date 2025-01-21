@@ -13,11 +13,12 @@ APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Construct the full path to data.json
 DATA_FILE = os.path.join(APP_DIR, "data.json")
+MOVEMENTS_FILE = os.path.join(APP_DIR, "movements.txt")
 
 model = genai.GenerativeModel(model_name="gemini-1.5-flash")
 
 def load_movements():
-    with open("app/movements.txt", "r") as file:
+    with open(MOVEMENTS_FILE, "r") as file:
         return {line.strip().lower(): line.strip() for line in file}
 
 VALID_MOVEMENTS = load_movements()
