@@ -7,7 +7,7 @@ import os
 import uuid
 from rapidfuzz import process
 from difflib import get_close_matches
-from pymongo import MongoClient
+from pymongo import MongoClient, DESCENDING
 from pymongo.server_api import ServerApi
 from flask import jsonify
 from bson import ObjectId
@@ -150,3 +150,26 @@ def make_serializable(data):
     if isinstance(data, ObjectId):
         return str(data)
     return data
+
+
+def get_last():
+    """
+    Fetch the last entered document from the given MongoDB collection.
+    
+    Args:
+        db: The MongoDB database object.
+        collection_name (str): The name of the collection to query.
+    
+    Returns:
+        dict: The most recent document, or None if the collection is empty.
+    """
+    try:
+        # Query the last entered document by sorting in descending order on '_id'
+        last_document = collection.find_one(sort=[('_id', DESCENDING)])
+        if last_document:
+            # Convert ObjectId to string for JSON serialization
+            last_document["_id"] = str(last_document["_id"])
+        return last_document
+    except Exception as e:
+        print(f"Error in get_last: {e}")
+        return None

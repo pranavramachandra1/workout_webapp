@@ -70,16 +70,20 @@ def debug_env():
 
 @main.route('/api/last_entry', methods=['GET'])
 def last_entry():
+    """
+    Flask route to fetch the last entered document in the MongoDB collection.
+    
+    Returns:
+        JSON response with the last document or an error message.
+    """
     try:
-        # Fetch the most recent document by sorting on '_id' (default for MongoDB ObjectIDs)
-        last_document = db["your_collection_name"].find_one(sort=[('_id', DESCENDING)])
+        # Call the get_last function from services.py
+        last_document = get_last()
         
         if last_document:
-            # Convert ObjectId to string for JSON serialization
-            last_document["_id"] = str(last_document["_id"])
             return jsonify(last_document)
         else:
             return jsonify({"message": "No entries found in the database"}), 404
     except Exception as e:
-        print(f"Error fetching last entry: {e}")
+        print(f"Error in last_entry route: {e}")
         return jsonify({"error": "An error occurred", "details": str(e)}), 500
