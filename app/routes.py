@@ -20,25 +20,6 @@ def receive_sms():
     upload_workout(body)    
     return "<Response><Message>Message received</Message></Response>", 200
 
-@main.route('/api/get_workout', methods=['GET'])
-def get_workout_data():
-
-    id = request.args.get('id', None)
-
-    if not id:
-        return jsonify({"error": "No ID provided"}), 400
-
-    try:
-        data = search_by_uuid(id)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-    if data:
-        return jsonify(data), 200
-
-    return jsonify({"error": "Workout not found"}), 404
-
-
 @main.route('/api/get_curr_page', methods=['GET'])
 def get_curr_page():
 
@@ -80,17 +61,3 @@ def get_all_movements():
         return jsonify({"error": str(e)}), 500
 
     return jsonify(movements), 200
-
-@main.route('/api/get_data')
-def get_data():
-    print("Fetching data for /api/get_data")
-    data = read_data()  # Calls the function to load data.json
-    print(f"Data returned: {data}")
-    return jsonify(data)
-
-@main.route('/api/get_movements')
-def get_movements():
-    print("Fetching movements for /api/get_movements")
-    movements = load_movements()  # Calls the function to load movements.txt
-    print(f"Movements returned: {movements}")
-    return jsonify(movements)

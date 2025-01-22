@@ -7,12 +7,15 @@ import os
 import uuid
 from rapidfuzz import process
 from difflib import get_close_matches
+from pymongo import MongoClient
+from pymongo.server_api import ServerApi
+from flask import jsonify
+from bson import ObjectId
 
 # Get the absolute path to the app directory
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Construct the full path to data.json
-DATA_FILE = os.path.join(APP_DIR, "data.json")
 MOVEMENTS_FILE = os.path.join(APP_DIR, "movements.txt")
 
 model = genai.GenerativeModel(model_name="gemini-1.5-flash")
@@ -24,6 +27,13 @@ def load_movements():
 VALID_MOVEMENTS = load_movements()
 PAGE_SIZE = 10
 
+mongo_password = os.getenv("MONGO_DB_PASSWORD")
+mongo_username = os.getenv("MONGO_DB_USERNAME")
+
+client = MongoClient(f"mongodb+srv://{mongo_username}:{mongo_password}@cluster0.3qeyv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", server_api=ServerApi('1'))
+db = client.workout_webapp
+collection = db.workout_data
+
 """
 Route Services:
 """
@@ -32,7 +42,7 @@ def upload_workout(text: str) -> Dict:
 
     if detect_workout(text):
         workout_data = format_sms_workout(text)
-        add_workout(workout_data)
+        upload_to_db(workout_data)
         print("added workout!")
 
     return {}
@@ -53,7 +63,7 @@ def format_sms_workout(text: str) -> Dict:
     print('standardizing movements...')
     # standardize movement names:
     workout_data = validate_and_correct_movements(workout_data)
-    breakpoint()
+
     return workout_data
 
 def extract_json(response):
@@ -75,27 +85,24 @@ def extract_json(response):
         return {}
     
 def get_home_page_wrkts():
-    data = read_data()
-    if len(data["workouts"]) == 0:
-        return []
-    if len(data['workouts']) <= PAGE_SIZE:
-        return data["workouts"]
-    start = (len(data['workouts']) - 1) * PAGE_SIZE
-    end = start + PAGE_SIZE
-    return data["workouts"][start:end]
-    
-def search_by_uuid(uuid):
-    data = read_data()
-    for workout in data["workouts"]:
-        if workout.get('id', None) and workout['id'] == uuid:
-            return workout
-    return {}
+    results = collection.find().sort("date", -1).limit(10)
+    data = list(results)
+    return make_serializable(data)
 
 def aggregate_volume(movement):
-    data = read_data()
+
+    query = {
+        "workout": {
+            "$elemMatch": {
+                "movement": "pull-up"
+            }
+        }
+    }
+
+    results = collection.find(query)
     volume_by_date = {}
 
-    for workout in data["workouts"]:
+    for workout in results:
         for movement_data in workout["workout"]:
             if movement_data["movement"] == movement:
                 date = workout["date"]
@@ -103,19 +110,6 @@ def aggregate_volume(movement):
                 volume_by_date[date] = volume
 
     return volume_by_date
-
-def read_data():
-    with open(DATA_FILE, "r") as file:
-        return json.load(file)
-
-def write_data(data):
-    with open(DATA_FILE, "w") as file:
-        json.dump(data, file, indent=4)
-
-def add_workout(new_workout):
-    data = read_data()  # Load existing data
-    data["workouts"].append(new_workout)  # Add the new workout
-    write_data(data)  # Save back to the JSON file
 
 def validate_and_correct_movements(workout_json, valid_movements = VALID_MOVEMENTS):
     for entry in workout_json["workout"]:
@@ -138,6 +132,9 @@ def validate_and_correct_movements(workout_json, valid_movements = VALID_MOVEMEN
     
     return workout_json
 
+def upload_to_db(workout_data):
+    collection.insert_one(workout_data)
+
 def load_movements():
     print(f"Loading movements file from: {MOVEMENTS_FILE}")
     with open(MOVEMENTS_FILE, "r") as file:
@@ -145,10 +142,11 @@ def load_movements():
     print(f"Loaded movements: {movements}")
     return movements
 
-def read_data():
-    print(f"Reading data file from: {DATA_FILE}")
-    with open(DATA_FILE, "r") as file:
-        data = json.load(file)
-    print(f"Loaded data: {data}")
+def make_serializable(data):
+    if isinstance(data, list):
+        return [make_serializable(item) for item in data]
+    if isinstance(data, dict):
+        return {key: make_serializable(value) for key, value in data.items()}
+    if isinstance(data, ObjectId):
+        return str(data)
     return data
-
