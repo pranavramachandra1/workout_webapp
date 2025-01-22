@@ -67,3 +67,19 @@ def debug_env():
     username = os.getenv('MONGO_DB_USERNAME')
     password = os.getenv('MONGO_DB_PASSWORD')
     return f"MONGO_DB_USERNAME: {username}, MONGO_DB_PASSWORD: {password}"
+
+@main.route('/api/last_entry', methods=['GET'])
+def last_entry():
+    try:
+        # Fetch the most recent document by sorting on '_id' (default for MongoDB ObjectIDs)
+        last_document = db["your_collection_name"].find_one(sort=[('_id', DESCENDING)])
+        
+        if last_document:
+            # Convert ObjectId to string for JSON serialization
+            last_document["_id"] = str(last_document["_id"])
+            return jsonify(last_document)
+        else:
+            return jsonify({"message": "No entries found in the database"}), 404
+    except Exception as e:
+        print(f"Error fetching last entry: {e}")
+        return jsonify({"error": "An error occurred", "details": str(e)}), 500
