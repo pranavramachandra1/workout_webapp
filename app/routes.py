@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify, send_from_directory, render_template, current_app
 from flask_cors import CORS
-from twilio.twiml.messaging_response import MessagingResponse
 import os
 from app.services import *
 
@@ -61,3 +60,10 @@ def get_all_movements():
         return jsonify({"error": str(e)}), 500
 
     return jsonify(movements), 200
+
+@main.route('/debug-env')
+def debug_env():
+    import os
+    username = os.getenv('MONGO_DB_USERNAME')
+    password = os.getenv('MONGO_DB_PASSWORD')
+    return f"MONGO_DB_USERNAME: {username}, MONGO_DB_PASSWORD: {password}"
