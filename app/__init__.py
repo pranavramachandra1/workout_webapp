@@ -8,3 +8,6 @@ def create_app():
     app.register_blueprint(main)
     
     return app
+
+# Create an app instance for deployment
+app = create_app()
