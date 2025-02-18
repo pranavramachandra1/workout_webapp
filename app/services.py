@@ -1,6 +1,5 @@
 import google.generativeai as genai
 from typing import Dict
-from app.prompts import *
 import datetime as datetime
 import json
 import os
@@ -11,6 +10,9 @@ from pymongo import MongoClient, DESCENDING
 from pymongo.server_api import ServerApi
 from flask import jsonify
 from bson import ObjectId
+
+# local packages:
+from app.prompts import *
 
 # Get the absolute path to the app directory
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -111,13 +113,27 @@ def aggregate_volume(movement):
 
     return volume_by_date
 
+def match_movement(movement, valid_movements):
+
+    if movement in valid_movements:
+        return movement
+    
+    # Check for exact matches
+    prompt = get_matching_prompt(prompt = VALID_MOVEMENTS_PROMPT, movement = movement, valid_movements = valid_movements)
+    response = model.generate_content([prompt])
+    matched_movement = response.text.split("\n")[0]
+    return matched_movement
+
 def validate_and_correct_movements(workout_json, valid_movements = VALID_MOVEMENTS):
     for entry in workout_json["workout"]:
         # Normalize the input movement
         movement = entry["movement"].strip().lower()
+
+        # Use gemini to ensure movement correct movement
+        matched_movement = match_movement(movement, valid_movements)
         
         # Attempt to find a match
-        closest_match = get_close_matches(movement, valid_movements, n=1, cutoff=0.6)
+        closest_match = get_close_matches(matched_movement, valid_movements, n=1, cutoff=0.6)
         
         if closest_match:
             # Assign the closest valid movement name

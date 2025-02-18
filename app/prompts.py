@@ -1,3 +1,5 @@
+from typing import List
+
 DETECTION_PROMPT= """
 You are a detection model. Your task is to determine if a given text is formatted like a workout description. 
 
@@ -63,17 +65,17 @@ You are a formatting model. Your task is to process workout data and format it a
 ### Example Input:
 
 Bench Press:
-Set 1: 135 lbs x 10 reps - Failed on last rep
-Set 2: 145 lbs x 8 reps
+Set 1: 135 x 10 reps - Failed on last rep
+Set 2: 145 x 8 reps
 Set 3: 155 lbs x 6 reps
-Set 4: 165 lbs x 4 reps
+Set 4: 165 x 4 reps
 Set 5: 175 lbs x 2 reps
 
 Lat Pull Downs:
 Set 1: 100 lbs x 10 reps
-Set 2: 110 lbs x 8 reps - Failed on last rep
+Set 2: 110 x 8 reps - Failed on last rep
 Set 3: 120 lbs x 6 reps
-Set 4: 130 lbs x 4 reps - Failed on last rep
+Set 4: 130 x 4 reps - Failed on last rep
 Set 5: 140 lbs x 2 reps
 
 ### Example Output:
@@ -106,5 +108,29 @@ Set 5: 140 lbs x 2 reps
 Text:
 """
 
+
+VALID_MOVEMENTS_PROMPT = """
+Task: Identify the correct movement name from a list of valid movements.
+
+Variables:
+• valid_movements: a list of correctly spelled movement names.
+• movement: a user-provided string that may include spelling errors or minor variations.
+
+Instructions:
+1. Normalize the 'movement' input (e.g., lowercasing and trimming whitespace).
+2. Correct any spelling errors in 'movement' to match the proper format.
+3. Compare the corrected input against the 'valid_movements' list using fuzzy matching or similarity scoring.
+4. Identify and return the single movement name from 'valid_movements' that best matches the corrected input.
+5. If no clear match is found, indicate that the movement is unrecognized.
+
+Ensure your output is exactly one of the entries in 'valid_movements' or a clear notification that no valid match exists. Optimize the matching for accuracy and performance.
+Ensure that your output is all lower case and that your output is ONLY the predicted movement name.
+"""
+
 def append_to_prompt(text: str, prompt: str) -> str:
     return prompt + "\n" + text + "\n"
+
+def get_matching_prompt(prompt: str, movement: str, valid_movements: List[str]) -> str:
+    prompt = append_to_prompt(f"Movement: {movement}", prompt)
+    prompt = append_to_prompt(f"Valid Movements: {str(valid_movements)}", prompt)
+    return prompt
