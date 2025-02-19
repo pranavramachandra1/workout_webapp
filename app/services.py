@@ -96,7 +96,7 @@ def aggregate_volume(movement):
     query = {
         "workout": {
             "$elemMatch": {
-                "movement": "pull-up"
+                "movement": movement
             }
         }
     }
